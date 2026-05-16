@@ -15,6 +15,10 @@ A lightweight web server that exposes a browser-based GUI for controlling RGB li
 - [Building from source](#building-from-source)
 - [REST API](#rest-api)
 
+## Demo
+
+![Demo](assets/demo.png)
+
 ## Features
 
 - Dark-themed web UI accessible from any device on the local network (desktop, phone, tablet)
