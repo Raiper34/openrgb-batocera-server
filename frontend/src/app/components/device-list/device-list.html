@@ -1,0 +1,40 @@
+<div class="device-list">
+  <div class="device-list__header">
+    <h3>Devices ({{ devices.length }})</h3>
+  </div>
+
+  @if (devices.length === 0) {
+    <div class="device-list__empty">
+      <i class="pi pi-inbox"></i>
+      <p>No devices found</p>
+    </div>
+  }
+
+  @for (device of devices; track device.id) {
+    <div
+      class="device-card"
+      [class.device-card--selected]="selectedDeviceId === device.id"
+      (click)="selectDevice(device)"
+    >
+      <div class="device-card__icon">
+        <i [class]="'pi ' + getDeviceTypeIcon(device.type)"></i>
+      </div>
+      <div class="device-card__info">
+        <div class="device-card__name">{{ device.name }}</div>
+        <div class="device-card__type">{{ getDeviceTypeLabel(device.type) }}</div>
+        <div class="device-card__meta">
+          <span>{{ device.leds.length }} LEDs</span>
+          <span>{{ device.zones.length }} zones</span>
+        </div>
+      </div>
+      <div class="device-card__color-preview">
+        @if (device.colors.length > 0) {
+          <div
+            class="color-dot"
+            [style.background-color]="'rgb(' + device.colors[0].r + ',' + device.colors[0].g + ',' + device.colors[0].b + ')'"
+          ></div>
+        }
+      </div>
+    </div>
+  }
+</div>

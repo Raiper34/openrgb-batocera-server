@@ -1,0 +1,23 @@
+# Go binaries
+openrgb-batocera-server
+openrgb-batocera-server-batocera
+openrgb-batocera-server-batocera-arm64
+
+# Angular build artifacts
+frontend/dist/
+frontend/.angular/
+frontend/node_modules/
+
+# Embedded web files (generated — do not commit, run `make build-frontend` first)
+web/*
+!web/.gitkeep
+
+# IDE config
+.idea/
+frontend/.vscode/
+
+# Runtime state
+state.json
+
+# AI agent runtime state
+.sisyphus/

@@ -1,0 +1,157 @@
+<p-toast />
+
+<!-- Connection Settings Dialog -->
+<p-dialog
+  header="Connection Settings"
+  [(visible)]="showConnectionDialog"
+  [modal]="true"
+  [style]="{ width: 'min(28rem, 95vw)' }"
+  [draggable]="false"
+>
+  <div class="dialog-body">
+    @if (status.from_env) {
+      <p-message severity="warn" styleClass="dialog-env-warning">
+        <span>
+          Server is configured via <code>OPENRGB_HOST</code> environment variable
+          (<strong>{{ status.env_host }}</strong>). After the next restart the env
+          variable will take effect again, overriding any changes made here.
+        </span>
+      </p-message>
+    }
+
+    <div class="dialog-fields">
+      <label class="dialog-label">Host</label>
+      <input pInputText [(ngModel)]="dialogHost" placeholder="localhost" style="width: 100%" />
+
+      <label class="dialog-label">Port</label>
+      <p-inputnumber
+        [(ngModel)]="dialogPort"
+        [useGrouping]="false"
+        placeholder="6742"
+        [style]="{ width: '100%' }"
+      />
+    </div>
+
+    <div class="dialog-actions">
+      <p-button label="Connect" icon="pi pi-link" [loading]="isLoading" (onClick)="connectFromDialog()" />
+      @if (status.connected) {
+        <p-button label="Disconnect" icon="pi pi-times" severity="danger" (onClick)="disconnect()" />
+      }
+    </div>
+  </div>
+</p-dialog>
+
+<div class="layout">
+  <!-- Header -->
+  <header class="header">
+    <div class="header__brand">
+      <div class="header__logo">
+        <i class="pi pi-palette"></i>
+      </div>
+      <div>
+        <h1>OpenRGB Batocera</h1>
+        <span class="header__subtitle">RGB Controller</span>
+      </div>
+    </div>
+
+    <div class="header__connection">
+      @if (status.connected) {
+        <button class="connection-chip" (click)="openConnectionDialog()" title="Click to change connection">
+          <span class="status-dot status-dot--connected"></span>
+          <span class="connection-text">{{ status.host }}:{{ status.port }}</span>
+          <i class="pi pi-pencil connection-edit-icon"></i>
+        </button>
+      } @else {
+        <div class="connect-form">
+          <span class="status-dot status-dot--disconnected"></span>
+          <input pInputText [(ngModel)]="connectHost" placeholder="Host" [style]="{ width: '8rem', fontSize: '0.875rem' }" />
+          <p-inputnumber
+            [(ngModel)]="connectPort"
+            [useGrouping]="false"
+            placeholder="Port"
+            [style]="{ width: '5rem' }"
+          />
+          <p-button label="Connect" icon="pi pi-link" [loading]="isLoading" (onClick)="connect()" />
+        </div>
+      }
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main" [class]="'main main--' + mobilePanel">
+    @if (status.connected) {
+      <!-- Sidebar: device list + apply-all/refresh -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="apply-all-row">
+            <p-colorpicker [(ngModel)]="globalColor" format="hex" />
+            <p-button
+              label="Apply All"
+              icon="pi pi-bolt"
+              size="small"
+              styleClass="apply-all-btn"
+              (onClick)="applyGlobalColor()"
+              pTooltip="Apply color to all devices"
+              [disabled]="isLoading"
+            />
+            <p-button
+              icon="pi pi-refresh"
+              severity="secondary"
+              size="small"
+              [loading]="isLoading"
+              (onClick)="loadDevices()"
+              pTooltip="Refresh devices"
+            />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <app-device-list
+          [devices]="devices"
+          [selectedDeviceId]="selectedDevice?.id ?? null"
+          (deviceSelected)="onDeviceSelected($event)"
+        />
+      </aside>
+
+      <!-- Content: device detail -->
+      <section class="content">
+        <!-- Mobile back button -->
+        <div class="mobile-back">
+          <p-button
+            icon="pi pi-arrow-left"
+            label="Devices"
+            severity="secondary"
+            size="small"
+            (onClick)="goBackToList()"
+          />
+        </div>
+
+        <app-device-detail
+          [device]="selectedDevice"
+          (setDeviceColors)="onSetDeviceColors($event)"
+          (setZoneColors)="onSetZoneColors($event)"
+          (setMode)="onSetMode($event)"
+        />
+      </section>
+
+    } @else {
+      <div class="disconnected-state">
+        @if (isAutoConnecting) {
+          <p-card styleClass="disconnected-card" [style]="{ maxWidth: '480px', width: '100%' }">
+            <i class="pi pi-spin pi-spinner"></i>
+            <h2>Connecting...</h2>
+            <p>Connecting to {{ connectHost }}:{{ connectPort }}</p>
+          </p-card>
+        } @else {
+          <p-card styleClass="disconnected-card" [style]="{ maxWidth: '480px', width: '100%' }">
+            <i class="pi pi-bolt"></i>
+            <h2>Connect to OpenRGB</h2>
+            <p>Enter the host and port of your OpenRGB server and click Connect.</p>
+            <p class="hint">Make sure OpenRGB is running with: <code>openrgb --server --port 6742</code></p>
+          </p-card>
+        }
+      </div>
+    }
+  </main>
+</div>

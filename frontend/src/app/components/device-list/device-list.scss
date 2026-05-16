@@ -1,0 +1,143 @@
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &__header {
+    h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--p-surface-300, #94a3b8);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2rem 1rem;
+    color: var(--p-surface-400, #64748b);
+
+    i {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.device-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--p-surface-700, #2a2a4a);
+  background: var(--p-surface-900, #16213e);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  /* Minimum 44px touch target height for accessibility */
+  min-height: 3rem;
+
+  &:hover {
+    border-color: var(--p-primary-color, #6366f1);
+    background: var(--p-surface-800, #1e1e3f);
+  }
+
+  &:active {
+    background: #252560;
+  }
+
+  &--selected {
+    border-color: var(--p-primary-color, #6366f1);
+    background: var(--p-surface-800, #1e1e3f);
+    box-shadow: 0 0 0 1px var(--p-primary-color, #6366f1);
+  }
+
+  &__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f3460;
+    border-radius: 0.5rem;
+    color: var(--p-primary-300, #818cf8);
+    font-size: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--p-surface-100, #e2e8f0);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__type {
+    font-size: 0.75rem;
+    color: var(--p-primary-300, #818cf8);
+    margin-top: 0.125rem;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+
+    span {
+      font-size: 0.75rem;
+      color: var(--p-surface-400, #64748b);
+    }
+  }
+
+  &__color-preview {
+    flex-shrink: 0;
+  }
+}
+
+.color-dot {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===================================================================
+   Mobile (≤ 768px)
+   =================================================================== */
+@media (max-width: 768px) {
+  .device-card {
+    padding: 1rem;
+    min-height: 3.5rem;
+
+    &__icon {
+      width: 2.75rem;
+      height: 2.75rem;
+      font-size: 1.25rem;
+    }
+
+    &__name {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .color-dot {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}

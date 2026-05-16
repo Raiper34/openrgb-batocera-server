@@ -1,0 +1,151 @@
+@if (device) {
+  <div class="device-detail">
+    <div class="device-detail__header">
+      <h2>{{ device.name }}</h2>
+      <div class="device-detail__meta">
+        @if (device.vendor) {
+          <p-tag [value]="device.vendor" icon="pi pi-building" severity="secondary" />
+        }
+        @if (device.version) {
+          <p-tag [value]="'v' + device.version" icon="pi pi-info-circle" severity="secondary" />
+        }
+        <p-tag [value]="device.leds.length + ' LEDs'" icon="pi pi-microchip" severity="secondary" />
+      </div>
+    </div>
+
+    <p-tabs [(value)]="activeTab">
+      <p-tablist>
+        <p-tab value="0">Colors</p-tab>
+        <p-tab value="1">Zones</p-tab>
+        <p-tab value="2">Modes</p-tab>
+        <p-tab value="3">LED Map</p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <!-- Colors tab -->
+        <p-tabpanel value="0">
+          <div class="tab-content">
+            <div class="color-section">
+              <h4>Pick Color</h4>
+              <div class="color-picker-row">
+                <p-colorpicker [(ngModel)]="selectedColor" format="hex" />
+                <span class="color-hex">{{ selectedColor }}</span>
+              </div>
+              <div class="color-actions">
+                <p-button
+                  label="Apply to All LEDs"
+                  icon="pi pi-check"
+                  (onClick)="applyColorToDevice()"
+                />
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Zones tab -->
+        <p-tabpanel value="1">
+          <div class="tab-content">
+            <div class="zones-list">
+              @for (zone of device.zones; track $index) {
+                <div
+                  class="zone-card"
+                  [class.zone-card--selected]="selectedZoneIndex === $index"
+                  (click)="selectedZoneIndex = $index"
+                >
+                  <div class="zone-card__name">{{ zone.name }}</div>
+                  <div class="zone-card__count">{{ zone.leds_count }} LEDs</div>
+                </div>
+              }
+            </div>
+
+            @if (device.zones.length > 0) {
+              <div class="zone-color-section">
+                <h4>Apply Color to Zone: {{ device.zones[selectedZoneIndex]?.name }}</h4>
+                <div class="color-picker-row">
+                  <p-colorpicker [(ngModel)]="selectedColor" format="hex" />
+                </div>
+                <p-button
+                  label="Apply to Zone"
+                  icon="pi pi-check"
+                  (onClick)="applyColorToZone()"
+                />
+              </div>
+            }
+          </div>
+        </p-tabpanel>
+
+        <!-- Modes tab -->
+        <p-tabpanel value="2">
+          <div class="tab-content">
+            <div class="mode-section">
+              <h4>Active Mode</h4>
+              <div class="mode-selector">
+                <p-select
+                  [options]="modeOptions"
+                  [(ngModel)]="selectedModeId"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select mode"
+                />
+                <p-button
+                  label="Apply Mode"
+                  icon="pi pi-play"
+                  (onClick)="applyMode()"
+                />
+              </div>
+
+              @if (device.modes[selectedModeId]; as mode) {
+                <p-card styleClass="mode-info">
+                  <div class="mode-info__item">
+                    <span class="label">Name:</span>
+                    <span class="value">{{ mode.name }}</span>
+                  </div>
+                  @if (mode.speed_min !== mode.speed_max) {
+                    <div class="mode-info__item">
+                      <span class="label">Speed:</span>
+                      <span class="value">{{ mode.speed }}</span>
+                    </div>
+                  }
+                  @if (mode.brightness_min !== mode.brightness_max) {
+                    <div class="mode-info__item">
+                      <span class="label">Brightness:</span>
+                      <span class="value">{{ mode.brightness }}</span>
+                    </div>
+                  }
+                </p-card>
+              }
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- LED Map tab -->
+        <p-tabpanel value="3">
+          <div class="tab-content">
+            <div class="led-map">
+              @for (zone of device.zones; track $index) {
+                <div class="led-zone">
+                  <h5>{{ zone.name }}</h5>
+                  <div class="led-grid">
+                    @for (ledIndex of getLedsForZone($index); track ledIndex) {
+                      <div
+                        class="led-dot"
+                        [style.background-color]="getLedColor(ledIndex)"
+                        [pTooltip]="device.leds[ledIndex]?.name || 'LED ' + ledIndex"
+                        tooltipPosition="top"
+                      ></div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+} @else {
+  <div class="no-device">
+    <i class="pi pi-arrow-left"></i>
+    <p>Select a device from the list</p>
+  </div>
+}
