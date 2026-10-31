@@ -158,8 +158,7 @@ Error responses always use `{ "error": "message" }`.
 ## What Does Not Exist (yet)
 
 - **No tests** — no `*_test.go` files, no `*.spec.ts` files.
-- **No CI/CD** — no GitHub Actions or other pipeline.
+- **No tests/lint in CI** — `.github/workflows/release.yml` only builds and publishes a release (amd64 + arm64 binaries, tag `v1.0.<run_number>`) on every push to `main`.
 - **No linting config** — no `.golangci.yml`, no ESLint.
 - **No OpenAPI/Swagger spec** — API is documented only in this file and README.md.
 - **No Docker** — deployment is a single binary copied via `scp`.
-- **No remote git** — repository is local only.
